@@ -313,6 +313,25 @@ app.get("/users", async (req: Request, res: Response) => {
 	}
 })
 
+/**
+ * Endpoint to delete a user by ID
+ */
+app.delete("/users/:id", async (req: Request, res: Response) => {
+	try {
+		await userIsAdmin(req, res, async () => {
+			const userId = req.params.id
+
+			// Delete the user from the database
+			await query("DELETE FROM users WHERE id = ?", [userId])
+
+			res.sendStatus(204)
+		})
+	} catch (err) {
+		console.error(err)
+		res.sendStatus(500)
+	}
+})
+
 app.listen(3000, () => {
 	console.log("Server is running on port 3000")
 })
